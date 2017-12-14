@@ -25,7 +25,8 @@
                           Artists
                       </a>
                   </li>
-                  <li role="presentation">
+                  <li role="presentation"
+                      class="active">
                       <a href="${pageContext.request.contextPath}/displayAlbumsPage">
                           Albums
                       </a>
@@ -35,8 +36,7 @@
                           Genres
                       </a>
                   </li>
-                  <li role="presentation"
-                      class="active">
+                  <li role="presentation">
                       <a href="${pageContext.request.contextPath}/displaySearchPage">
                           Search
                       </a>
@@ -51,4 +51,3 @@
 
     </body>
 </html>
-

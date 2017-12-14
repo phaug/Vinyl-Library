@@ -22,8 +22,18 @@
                         </a>
                   </li>
                   <li role="presentation">
-                      <a href="${pageContext.request.contextPath}/displayVinylLibraryPage">
-                          Vinyl Library
+                      <a href="${pageContext.request.contextPath}/displayArtistsPage">
+                          Artists
+                      </a>
+                  </li>
+                  <li role="presentation">
+                      <a href="${pageContext.request.contextPath}/displayAlbumsPage">
+                          Albums
+                      </a>
+                  </li>
+                  <li role="presentation">
+                      <a href="${pageContext.request.contextPath}/displayGenresPage">
+                          Genres
                       </a>
                   </li>
                   <li role="presentation">
@@ -43,4 +53,3 @@
 
     </body>
 </html>
-

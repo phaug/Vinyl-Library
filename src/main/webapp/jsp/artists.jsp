@@ -22,8 +22,18 @@
                   </li>
                   <li role="presentation"
                       class="active">
-                      <a href="${pageContext.request.contextPath}/displayVinylLibraryPage">
-                          Vinyl Library
+                      <a href="${pageContext.request.contextPath}/displayArtistsPage">
+                          Artists
+                      </a>
+                  </li>
+                  <li role="presentation">
+                      <a href="${pageContext.request.contextPath}/displayAlbumsPage">
+                          Albums
+                      </a>
+                  </li>
+                  <li role="presentation">
+                      <a href="${pageContext.request.contextPath}/displayGenresPage">
+                          Genres
                       </a>
                   </li>
                   <li role="presentation">
@@ -33,9 +43,7 @@
                   </li>
                 </ul>    
             </div>
-                <p>
-                    Your personal vinyl library tracker/database.
-                </p>
+
         </div>
         <!-- Placed at the end of the document so the pages load faster -->
         <script src="${pageContext.request.contextPath}/js/jquery-3.1.1.min.js"></script>
@@ -43,4 +51,3 @@
 
     </body>
 </html>
-

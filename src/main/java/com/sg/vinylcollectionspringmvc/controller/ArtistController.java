@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author patri
  */
 @Controller
-public class VinylController {
+public class ArtistController {
     
-    @RequestMapping(value="/displayVinylLibraryPage", method=RequestMethod.GET)
-    public String displayVinylLibraryPage() {
-        return "vinylLibrary";
+    @RequestMapping(value="/displayArtistsPage", method=RequestMethod.GET)
+    public String displayArtistsPage() {
+        return "artists";
     }
 }
