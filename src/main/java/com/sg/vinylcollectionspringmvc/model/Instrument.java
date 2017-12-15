@@ -5,6 +5,8 @@
  */
 package com.sg.vinylcollectionspringmvc.model;
 
+import java.util.Objects;
+
 /**
  *
  * @author patri
@@ -13,4 +15,50 @@ public class Instrument {
     
     private long instrumentId;
     private String instrumentName;
+
+    public long getInstrumentId() {
+        return instrumentId;
+    }
+
+    public void setInstrumentId(long instrumentId) {
+        this.instrumentId = instrumentId;
+    }
+
+    public String getInstrumentName() {
+        return instrumentName;
+    }
+
+    public void setInstrumentName(String instrumentName) {
+        this.instrumentName = instrumentName;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + (int) (this.instrumentId ^ (this.instrumentId >>> 32));
+        hash = 37 * hash + Objects.hashCode(this.instrumentName);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Instrument other = (Instrument) obj;
+        if (this.instrumentId != other.instrumentId) {
+            return false;
+        }
+        if (!Objects.equals(this.instrumentName, other.instrumentName)) {
+            return false;
+        }
+        return true;
+    }
+    
 }
