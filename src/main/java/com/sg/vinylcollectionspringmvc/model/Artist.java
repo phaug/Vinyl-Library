@@ -17,7 +17,7 @@ public class Artist {
     
     private long artistId;
     private String ArtistName;
-    private long albumId;
+    private List<Album> albums = new ArrayList<>();
     private List<Musician> musicians = new ArrayList<>();
 
     public long getArtistId() {
@@ -36,12 +36,12 @@ public class Artist {
         this.ArtistName = ArtistName;
     }
 
-    public long getAlbumId() {
-        return albumId;
+    public List<Album> getAlbums() {
+        return albums;
     }
 
-    public void setAlbumId(long albumId) {
-        this.albumId = albumId;
+    public void setAlbums(List<Album> albums) {
+        this.albums = albums;
     }
 
     public List<Musician> getMusicians() {
@@ -55,10 +55,10 @@ public class Artist {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 97 * hash + (int) (this.artistId ^ (this.artistId >>> 32));
-        hash = 97 * hash + Objects.hashCode(this.ArtistName);
-        hash = 97 * hash + (int) (this.albumId ^ (this.albumId >>> 32));
-        hash = 97 * hash + Objects.hashCode(this.musicians);
+        hash = 53 * hash + (int) (this.artistId ^ (this.artistId >>> 32));
+        hash = 53 * hash + Objects.hashCode(this.ArtistName);
+        hash = 53 * hash + Objects.hashCode(this.albums);
+        hash = 53 * hash + Objects.hashCode(this.musicians);
         return hash;
     }
 
@@ -77,10 +77,10 @@ public class Artist {
         if (this.artistId != other.artistId) {
             return false;
         }
-        if (this.albumId != other.albumId) {
+        if (!Objects.equals(this.ArtistName, other.ArtistName)) {
             return false;
         }
-        if (!Objects.equals(this.ArtistName, other.ArtistName)) {
+        if (!Objects.equals(this.albums, other.albums)) {
             return false;
         }
         if (!Objects.equals(this.musicians, other.musicians)) {
@@ -88,6 +88,6 @@ public class Artist {
         }
         return true;
     }
-    
-    
+
+
 }

@@ -15,17 +15,17 @@ import java.util.Objects;
  */
 public class Musician {
 
-    private long memberId;
+    private long musicianId;
     private String firstName;
     private String lastName;
     private List<Instrument> instruments = new ArrayList<>();
 
-    public long getMemberId() {
-        return memberId;
+    public long getMusicianId() {
+        return musicianId;
     }
 
-    public void setMemberId(long memberId) {
-        this.memberId = memberId;
+    public void setMusicianId(long musicianId) {
+        this.musicianId = musicianId;
     }
 
     public String getFirstName() {
@@ -55,10 +55,10 @@ public class Musician {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 97 * hash + (int) (this.memberId ^ (this.memberId >>> 32));
-        hash = 97 * hash + Objects.hashCode(this.firstName);
-        hash = 97 * hash + Objects.hashCode(this.lastName);
-        hash = 97 * hash + Objects.hashCode(this.instruments);
+        hash = 41 * hash + (int) (this.musicianId ^ (this.musicianId >>> 32));
+        hash = 41 * hash + Objects.hashCode(this.firstName);
+        hash = 41 * hash + Objects.hashCode(this.lastName);
+        hash = 41 * hash + Objects.hashCode(this.instruments);
         return hash;
     }
 
@@ -74,7 +74,7 @@ public class Musician {
             return false;
         }
         final Musician other = (Musician) obj;
-        if (this.memberId != other.memberId) {
+        if (this.musicianId != other.musicianId) {
             return false;
         }
         if (!Objects.equals(this.firstName, other.firstName)) {
@@ -89,4 +89,5 @@ public class Musician {
         return true;
     }
 
+    
 }
