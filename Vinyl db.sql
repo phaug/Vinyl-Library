@@ -2,39 +2,39 @@ create database vinyl_collection;
 
 use vinyl_collection;
 
-create table song (
+create table songs (
 songId int not null auto_increment,
 songName varchar (255) not null,
 songLength time null,
 primary key (songId)
 );
 
-create table genre (
+create table genres (
 genreId int not null auto_increment,
 genreName varchar (255) not null,
 primary key (genreId)
 );
 
-create table instrument (
+create table instruments (
 instrumentId int not null auto_increment,
 instrumentName varchar (255) not null,
 primary key (instrumentId)
 );
 
-create table musician (
+create table musicians (
 musicianId	int not null auto_increment,
 firstName varchar (255) not null,
 lastName varchar (255) not null,
 primary key (musicianId)
 );
 
-create table artist (
+create table artists (
 artistId int not null auto_increment,
 artistName varchar (255) not null,
 primary key (artistId)
 );
 
-create table album (
+create table albums (
 albumId int not null auto_increment,
 albumName varchar (255) not null,
 albumYear year not null,
@@ -95,20 +95,6 @@ foreign key (albumId) references album(albumId);
 
 alter table albummusician
 add constraint fk_albummusician_musician
-foreign key (musicianId) references musician(musicianId);
-
-create table artistmusician (
-artistId int not null,
-musicianId int not null,
-primary key (artistId, musicianId)
-);
-
-alter table artistmusician
-add constraint fk_artistmusician_artist
-foreign key (artistId) references artist(artistId);
-
-alter table artistmusician
-add constraint fk_artistmusician_musician
 foreign key (musicianId) references musician(musicianId);
 
 create table musicianinstrument (

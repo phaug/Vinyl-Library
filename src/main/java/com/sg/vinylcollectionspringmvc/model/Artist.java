@@ -14,11 +14,10 @@ import java.util.Objects;
  * @author patri
  */
 public class Artist {
-    
+
     private long artistId;
     private String ArtistName;
     private List<Album> albums = new ArrayList<>();
-    private List<Musician> musicians = new ArrayList<>();
 
     public long getArtistId() {
         return artistId;
@@ -44,21 +43,12 @@ public class Artist {
         this.albums = albums;
     }
 
-    public List<Musician> getMusicians() {
-        return musicians;
-    }
-
-    public void setMusicians(List<Musician> musicians) {
-        this.musicians = musicians;
-    }
-
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 53 * hash + (int) (this.artistId ^ (this.artistId >>> 32));
-        hash = 53 * hash + Objects.hashCode(this.ArtistName);
-        hash = 53 * hash + Objects.hashCode(this.albums);
-        hash = 53 * hash + Objects.hashCode(this.musicians);
+        int hash = 5;
+        hash = 13 * hash + (int) (this.artistId ^ (this.artistId >>> 32));
+        hash = 13 * hash + Objects.hashCode(this.ArtistName);
+        hash = 13 * hash + Objects.hashCode(this.albums);
         return hash;
     }
 
@@ -83,11 +73,7 @@ public class Artist {
         if (!Objects.equals(this.albums, other.albums)) {
             return false;
         }
-        if (!Objects.equals(this.musicians, other.musicians)) {
-            return false;
-        }
         return true;
     }
-
 
 }
