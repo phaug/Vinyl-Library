@@ -16,7 +16,7 @@ import java.util.Objects;
 public class Artist {
 
     private long artistId;
-    private String ArtistName;
+    private String artistName;
     private List<Album> albums = new ArrayList<>();
 
     public long getArtistId() {
@@ -28,11 +28,11 @@ public class Artist {
     }
 
     public String getArtistName() {
-        return ArtistName;
+        return artistName;
     }
 
     public void setArtistName(String ArtistName) {
-        this.ArtistName = ArtistName;
+        this.artistName = ArtistName;
     }
 
     public List<Album> getAlbums() {
@@ -47,7 +47,7 @@ public class Artist {
     public int hashCode() {
         int hash = 5;
         hash = 13 * hash + (int) (this.artistId ^ (this.artistId >>> 32));
-        hash = 13 * hash + Objects.hashCode(this.ArtistName);
+        hash = 13 * hash + Objects.hashCode(this.artistName);
         hash = 13 * hash + Objects.hashCode(this.albums);
         return hash;
     }
@@ -67,7 +67,7 @@ public class Artist {
         if (this.artistId != other.artistId) {
             return false;
         }
-        if (!Objects.equals(this.ArtistName, other.ArtistName)) {
+        if (!Objects.equals(this.artistName, other.artistName)) {
             return false;
         }
         if (!Objects.equals(this.albums, other.albums)) {
