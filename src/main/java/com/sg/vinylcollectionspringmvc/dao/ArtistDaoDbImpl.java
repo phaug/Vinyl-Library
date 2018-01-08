@@ -11,8 +11,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -47,6 +50,12 @@ public class ArtistDaoDbImpl implements ArtistDao {
 
     private static final String SQL_SELECT_ARTIST_BY_ID
             = "select * from artists where artistId = ?";
+    
+    private static final String SQL_SELECT_ALBUMS_BY_ARTISTID
+            ="select * from albums "
+            + "inner join albumartist on albums.albumId = albumartist.albumId"
+            + "inner join artist on artist.artistId = albumartist.artistId"
+            + "where artistId = ?";
 
     private static final class ArtistMapper implements RowMapper<Artist> {
 
@@ -73,29 +82,82 @@ public class ArtistDaoDbImpl implements ArtistDao {
 
     }
 
+    private void insertAlbumArtist(Artist artist) {
+        final long artistId = artist.getArtistId();
+        final List<Album> albums = artist.getAlbums();
+
+        for (Album currentAlbum : albums) {
+            jdbcTemplate.update(SQL_INSERT_ALBUMARTIST,
+                    artistId,
+                    currentAlbum.getAlbumId());
+        }
+    }
+
+    private List<Album> findAlbumsForArtist(Artist artist) {
+        return jdbcTemplate.query(SQL_SELECT_ALBUMS_BY_ARTISTID,
+                new AlbumMapper(),
+                artist.getArtistId());
+    }
+
+    private List<Artist>
+            associateAlbumsWithArtist(List<Artist> artistList) {
+        // set the complete list of album ids for artist
+        for (Artist currentArtist : artistList) {
+            // add albums to current artist
+            currentArtist.setAlbums(findAlbumsForArtist(currentArtist));
+        }
+        return artistList;
+    }
+
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public Artist addArtist(Artist artist) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        jdbcTemplate.update(SQL_INSERT_ARTIST,
+                artist.getArtistName());
+        artist.setArtistId(jdbcTemplate.queryForObject("select LAST_INSERT_ID()", Integer.class));
+
+        insertAlbumArtist(artist);
+        return artist;
+
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void removeArtist(long artistId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        jdbcTemplate.update(SQL_DELETE_ALBUMARTIST, artistId);
+        jdbcTemplate.update(SQL_DELETE_ARTIST, artistId);
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void updateArtist(Artist artist) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        jdbcTemplate.update(SQL_UPDATE_ARTIST,
+                artist.getArtistName(),
+                artist.getArtistId());
+
+        jdbcTemplate.update(SQL_DELETE_ALBUMARTIST, artist.getArtistId());
+        insertAlbumArtist(artist);
     }
 
     @Override
     public List<Artist> getAllArtists() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Artist> artistList = jdbcTemplate.query(SQL_SELECT_ALL_ARTISTS,
+                new ArtistMapper());
+        return associateAlbumsWithArtist(artistList);
     }
 
     @Override
     public Artist getArtistById(long artistId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            Artist artist = jdbcTemplate.queryForObject(SQL_SELECT_ARTIST_BY_ID,
+                    new ArtistMapper(),
+                    artistId);
+
+            artist.setAlbums(findAlbumsForArtist(artist));
+            return artist;
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
+        }
     }
 
     @Override

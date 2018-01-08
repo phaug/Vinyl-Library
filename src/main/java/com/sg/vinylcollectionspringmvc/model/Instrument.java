@@ -5,16 +5,19 @@
  */
 package com.sg.vinylcollectionspringmvc.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
- *
+ *                              
  * @author patri
  */
 public class Instrument {
     
     private long instrumentId;
     private String instrumentName;
+    private List<Musician> musicians = new ArrayList<>();
 
     public long getInstrumentId() {
         return instrumentId;
@@ -32,11 +35,20 @@ public class Instrument {
         this.instrumentName = instrumentName;
     }
 
+    public List<Musician> getMusicians() {
+        return musicians;
+    }
+
+    public void setMusicians(List<Musician> musicians) {
+        this.musicians = musicians;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 37 * hash + (int) (this.instrumentId ^ (this.instrumentId >>> 32));
-        hash = 37 * hash + Objects.hashCode(this.instrumentName);
+        int hash = 3;
+        hash = 19 * hash + (int) (this.instrumentId ^ (this.instrumentId >>> 32));
+        hash = 19 * hash + Objects.hashCode(this.instrumentName);
+        hash = 19 * hash + Objects.hashCode(this.musicians);
         return hash;
     }
 
@@ -58,7 +70,11 @@ public class Instrument {
         if (!Objects.equals(this.instrumentName, other.instrumentName)) {
             return false;
         }
+        if (!Objects.equals(this.musicians, other.musicians)) {
+            return false;
+        }
         return true;
     }
-    
+
+   
 }

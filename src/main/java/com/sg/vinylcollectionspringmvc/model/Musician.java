@@ -19,6 +19,7 @@ public class Musician {
     private String firstName;
     private String lastName;
     private List<Instrument> instruments = new ArrayList<>();
+    private List<Album> albums = new ArrayList<>();
 
     public long getMusicianId() {
         return musicianId;
@@ -52,13 +53,22 @@ public class Musician {
         this.instruments = instruments;
     }
 
+    public List<Album> getAlbums() {
+        return albums;
+    }
+
+    public void setAlbums(List<Album> albums) {
+        this.albums = albums;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 41 * hash + (int) (this.musicianId ^ (this.musicianId >>> 32));
-        hash = 41 * hash + Objects.hashCode(this.firstName);
-        hash = 41 * hash + Objects.hashCode(this.lastName);
-        hash = 41 * hash + Objects.hashCode(this.instruments);
+        int hash = 5;
+        hash = 13 * hash + (int) (this.musicianId ^ (this.musicianId >>> 32));
+        hash = 13 * hash + Objects.hashCode(this.firstName);
+        hash = 13 * hash + Objects.hashCode(this.lastName);
+        hash = 13 * hash + Objects.hashCode(this.instruments);
+        hash = 13 * hash + Objects.hashCode(this.albums);
         return hash;
     }
 
@@ -86,8 +96,13 @@ public class Musician {
         if (!Objects.equals(this.instruments, other.instruments)) {
             return false;
         }
+        if (!Objects.equals(this.albums, other.albums)) {
+            return false;
+        }
         return true;
     }
+
+    
 
     
 }

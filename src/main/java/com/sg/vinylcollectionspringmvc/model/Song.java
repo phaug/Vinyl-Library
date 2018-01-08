@@ -5,8 +5,9 @@
  */
 package com.sg.vinylcollectionspringmvc.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 /**
  *
@@ -17,6 +18,7 @@ public class Song {
     private long songId;
     private String songName;
     private long songLength;
+    private List<Album> albums = new ArrayList<>();
 
     public long getSongId() {
         return songId;
@@ -42,12 +44,21 @@ public class Song {
         this.songLength = songLength;
     }
 
+    public List<Album> getAlbums() {
+        return albums;
+    }
+
+    public void setAlbums(List<Album> albums) {
+        this.albums = albums;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 89 * hash + (int) (this.songId ^ (this.songId >>> 32));
-        hash = 89 * hash + Objects.hashCode(this.songName);
-        hash = 89 * hash + (int) (this.songLength ^ (this.songLength >>> 32));
+        int hash = 3;
+        hash = 79 * hash + (int) (this.songId ^ (this.songId >>> 32));
+        hash = 79 * hash + Objects.hashCode(this.songName);
+        hash = 79 * hash + (int) (this.songLength ^ (this.songLength >>> 32));
+        hash = 79 * hash + Objects.hashCode(this.albums);
         return hash;
     }
 
@@ -72,8 +83,11 @@ public class Song {
         if (!Objects.equals(this.songName, other.songName)) {
             return false;
         }
+        if (!Objects.equals(this.albums, other.albums)) {
+            return false;
+        }
         return true;
     }
-   
+
     
 }

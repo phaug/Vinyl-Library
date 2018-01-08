@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -41,7 +43,7 @@ public class SongDaoDbImpl implements SongDao {
 
     private static final String SQL_UPDATE_SONG
             = "update songs set"
-            + "songName = ?, songLength = ?"
+            + "songName = ?, songLength = ?, albumId = ?"
             + "where songId = ?";
 
     private static final String SQL_SELECT_ALL_SONGS
@@ -73,24 +75,52 @@ public class SongDaoDbImpl implements SongDao {
 
     }
 
+    private void insertAlbumSong(Song song) {
+        final long songId = song.getSongId();
+        final List<Album> albums = song.getAlbums();
+
+        for (Album currentAlbum : albums) {
+            jdbcTemplate.update(SQL_INSERT_ALBUMSONG,
+                    songId,
+                    currentAlbum.getSongs());
+        }
+    }
+
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public Song addSong(Song song) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        jdbcTemplate.update(SQL_INSERT_SONG,
+                song.getSongName(),
+                song.getSongLength());
+
+        song.setSongId(jdbcTemplate.queryForObject("select LAST_INSERT_ID()", Integer.class));
+        insertAlbumSong(song);
+        return song;
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void removeSong(long songId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        jdbcTemplate.update(SQL_DELETE_ALBUMSONG, songId);
+        jdbcTemplate.update(SQL_DELETE_SONG, songId);
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void updateSong(Song song) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        jdbcTemplate.update(SQL_UPDATE_SONG,
+                song.getSongName(),
+                song.getSongLength(),
+                song.getSongId());
+        jdbcTemplate.update(SQL_DELETE_ALBUMSONG, song);
     }
 
     @Override
     public List<Song> getAllSongs() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Song> songs = jdbcTemplate.query(SQL_SELECT_ALL_SONGS,
+                new SongMapper());
+        
+        return songs;
     }
 
 }

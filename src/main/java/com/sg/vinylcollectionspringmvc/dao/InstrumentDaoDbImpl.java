@@ -5,7 +5,6 @@
  */
 package com.sg.vinylcollectionspringmvc.dao;
 
-import com.sg.vinylcollectionspringmvc.model.Album;
 import com.sg.vinylcollectionspringmvc.model.Instrument;
 import com.sg.vinylcollectionspringmvc.model.Musician;
 import java.sql.ResultSet;
@@ -13,6 +12,8 @@ import java.sql.SQLException;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -40,7 +41,7 @@ public class InstrumentDaoDbImpl implements InstrumentDao {
             = "delete from musicianinstrument where instrumentId = ?";
 
     private static final String SQL_UPDATE_INSTRUMENT
-            = "update instruments set instrumentName = ?"
+            = "update instruments set instrumentName = ?, musicianId = ?"
             + "where instrumentId = ?";
 
     private static final String SQL_SELECT_ALL_INSTRUMENTS
@@ -70,26 +71,56 @@ public class InstrumentDaoDbImpl implements InstrumentDao {
         }
 
     }  
+        
+        private void insertMusicianInstrument(Instrument instrument) {
+            final long instrumentId = instrument.getInstrumentId();
+            final List<Musician> musicians = instrument.getMusicians();
 
+            for (Musician currentMusician : musicians) {
+                jdbcTemplate.update(SQL_INSERT_MUSICANINSTRUMENT,
+                        instrumentId,
+                        currentMusician.getMusicianId());
+            }
+        }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public Instrument addInstrument(Instrument instrument) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        jdbcTemplate.update(SQL_INSERT_INSTRUMENT,
+                instrument.getInstrumentName());
+        
+        instrument.setInstrumentId(jdbcTemplate.queryForObject("select LAST_INSERT_ID()", Integer.class));
+        
+        insertMusicianInstrument(instrument);
+        return instrument;
+        
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void removeInstrument(long instrumentId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        jdbcTemplate.update(SQL_DELETE_MUSICIANINSTRUMENT, instrumentId);
+        jdbcTemplate.update (SQL_DELETE_INSTRUMENT, instrumentId);
+    }    
+
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void updateInstrument(Instrument instrument) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       jdbcTemplate.update(SQL_UPDATE_INSTRUMENT,
+               instrument.getInstrumentName(),
+               instrument.getInstrumentId());
+       
+       jdbcTemplate.update(SQL_DELETE_MUSICIANINSTRUMENT, instrument.getInstrumentId());
+       insertMusicianInstrument(instrument);
     }
 
     @Override
     public List<Instrument> getAllInstruments() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Instrument> instruments = jdbcTemplate.query(SQL_SELECT_ALL_INSTRUMENTS, 
+                new InstrumentMapper());
+        
+        return instruments;
     }
 
 }

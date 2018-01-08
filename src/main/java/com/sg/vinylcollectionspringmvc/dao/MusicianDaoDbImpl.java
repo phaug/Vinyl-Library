@@ -13,6 +13,8 @@ import java.sql.SQLException;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -48,7 +50,7 @@ public class MusicianDaoDbImpl implements MusicianDao {
 
     private static final String SQL_UPDATE_MUSICIAN
             = "update musicians set firstName = ?, lastName = ?, "
-            + "instrumentId = ? where musicianId = ?";
+            + "instrumentId = ?, albumId = ? where musicianId = ?";
 
     private static final String SQL_SELECT_ALL_MUSICIANS
             = "select * from musicians";
@@ -90,25 +92,70 @@ public class MusicianDaoDbImpl implements MusicianDao {
         }
 
     }
+    
+    private void insertMusicianInstrument(Musician musician) {
+        final long musicianId = musician.getMusicianId();
+        final List<Instrument> instruments = musician.getInstruments();
+
+        for (Instrument currentInstrument : instruments) {
+            jdbcTemplate.update(SQL_INSERT_MUSICANINSTRUMENT,
+                    musicianId,
+                    currentInstrument.getInstrumentId());
+        }
+    }
+    
+    private void insertAlbumMusician(Musician musician) {
+        final long musicianId = musician.getMusicianId();
+        final List<Album> albums = musician.getAlbums();
+
+        for (Album currentAlbum : albums) {
+            jdbcTemplate.update(SQL_INSERT_ALBUMMUSICIAN,
+                    musicianId,
+                    currentAlbum.getMusicians());
+        }
+    }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public Musician addMusician(Musician musician) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        jdbcTemplate.update(SQL_INSERT_MUSICIAN,
+                musician.getFirstName(),
+                musician.getLastName());
+        
+        musician.setMusicianId(jdbcTemplate.queryForObject("select LAST_INSERT_ID()", Integer.class));
+        insertMusicianInstrument(musician);
+        insertAlbumMusician(musician);
+        return musician;
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void removeMusician(long musicianId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        jdbcTemplate.update(SQL_DELETE_MUSICIANINSTRUMENT, musicianId);
+        jdbcTemplate.update(SQL_DELETE_ALBUMMUSICIAN, musicianId);
+        jdbcTemplate.update(SQL_DELETE_MUSICIAN, musicianId);
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void updateMusician(Musician musician) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        jdbcTemplate.update(SQL_UPDATE_MUSICIAN,
+                musician.getFirstName(),
+                musician.getLastName(),
+                musician.getMusicianId());
+        
+        jdbcTemplate.update(SQL_DELETE_MUSICIANINSTRUMENT, musician.getInstruments());
+        jdbcTemplate.update(SQL_DELETE_ALBUMMUSICIAN, musician.getAlbums());
+        insertMusicianInstrument(musician);
+        insertAlbumMusician(musician);
     }
 
     @Override
     public List<Musician> getAllMusicians() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Musician> musicians = jdbcTemplate.query(SQL_SELECT_ALL_MUSICIANS, 
+                new MusicianMapper());
+        
+        return musicians;
     }
 
 }
