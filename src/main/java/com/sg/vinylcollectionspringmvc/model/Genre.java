@@ -5,6 +5,8 @@
  */
 package com.sg.vinylcollectionspringmvc.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -15,6 +17,7 @@ public class Genre {
     
     private long genreId;
     private String genreName;
+    private List<Album> albums = new ArrayList<>();
 
     public long getGenreId() {
         return genreId;
@@ -32,11 +35,20 @@ public class Genre {
         this.genreName = genreName;
     }
 
+    public List<Album> getAlbums() {
+        return albums;
+    }
+
+    public void setAlbums(List<Album> albums) {
+        this.albums = albums;
+    }
+
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 29 * hash + (int) (this.genreId ^ (this.genreId >>> 32));
-        hash = 29 * hash + Objects.hashCode(this.genreName);
+        hash = 71 * hash + (int) (this.genreId ^ (this.genreId >>> 32));
+        hash = 71 * hash + Objects.hashCode(this.genreName);
+        hash = 71 * hash + Objects.hashCode(this.albums);
         return hash;
     }
 
@@ -58,7 +70,12 @@ public class Genre {
         if (!Objects.equals(this.genreName, other.genreName)) {
             return false;
         }
+        if (!Objects.equals(this.albums, other.albums)) {
+            return false;
+        }
         return true;
     }
+
+    
     
 }

@@ -15,13 +15,13 @@ import java.util.Map;
  */
 public interface GenreDao {
     
-    public GenreDao addGenre (Genre genre);
+    public Genre addGenre (Genre genre);
     
     public void removeGenre (long genreId);
     
     public void updateGenre (Genre genre);
     
-    public List<GenreDao> getAllGenres();
+    public List<Genre> getAllGenres();
     
     public Genre getGenreById (long genreId);
     
